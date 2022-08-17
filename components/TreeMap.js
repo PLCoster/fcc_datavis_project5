@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 
 import buildTreeMap from './helpers/buildTreeMap';
 
+import styles from './styles/TreeMap.module.css';
+
 const parentContainerClassName = 'treemap-container';
 
 function TreeMap({ plotInfo, dataReady }) {
@@ -14,16 +16,13 @@ function TreeMap({ plotInfo, dataReady }) {
 
   return (
     <div>
-      {dataReady ? (
-        <>
-          <h1 id="title">{plotInfo.title}</h1>
-          <h2 id="description">{plotInfo.subtitle}</h2>
-          <p>dataReady: {`${dataReady}`}</p>
-          <div className={parentContainerClassName}></div>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
+      <h1 id="title" className={`display-6 ${styles.title}`}>
+        {plotInfo.title}
+      </h1>
+      <h2 id="description" className={`display-6 ${styles.subtitle}`}>
+        {plotInfo.subtitle}
+      </h2>
+      <div className={parentContainerClassName}></div>
     </div>
   );
 }
