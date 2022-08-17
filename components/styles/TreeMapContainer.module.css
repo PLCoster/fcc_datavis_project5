@@ -1,5 +1,5 @@
 .treemapcontainer {
-  margin-top: 2vh;
+  margin: 2vh auto 5vh auto;
   display: flex;
   flex-direction: column;
   align-items: center;

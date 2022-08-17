@@ -90,7 +90,7 @@ function TreeMapContainer() {
   return (
     <>
       <Container className={styles.treemapcontainer}>
-        <Container className={styles.databuttoncontainer}>
+        <div className={styles.databuttoncontainer}>
           <Button
             className={styles.databutton}
             onClick={() => setCurrentDatasetName('games')}
@@ -109,7 +109,7 @@ function TreeMapContainer() {
           >
             Kickstarter
           </Button>
-        </Container>
+        </div>
         <TreeMap plotInfo={currentDataset} dataReady={!loadingData} />
       </Container>
     </>
