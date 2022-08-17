@@ -1,20 +1,21 @@
 .navbar {
-  /* background-image: linear-gradient(
-    to right,
-    #393b79,
-    #637939,
-    #843c39,
-    #7b4173
-  ); */
   background-image: linear-gradient(
     to right,
-    #3182bd,
-    #e6550d,
-    #31a354,
-    #756bb1
+    #af7aa1,
+    #4e79a7,
+    #76b7b2,
+    #59a14f,
+    #edc949,
+    #f28e2c,
+    #e15759
   );
 }
 
 .navbarBrand {
   margin-left: 40px;
+  color: white;
+}
+
+.navlink {
+  color: white;
 }

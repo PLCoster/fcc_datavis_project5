@@ -37,19 +37,31 @@ function NavBar({ timerPhase }) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="https://plcoster.github.io/homepage/">
+            <Nav.Link
+              className={styles.navlink}
+              href="https://plcoster.github.io/homepage/"
+            >
               Home
             </Nav.Link>
             <NavDropdown title="FreeCodeCamp Projects" id="basic-nav-dropdown">
               {fccProjectLinks}
             </NavDropdown>
-            <Nav.Link href="https://plcoster.github.io/homepage/projects.html">
+            <Nav.Link
+              className={styles.navlink}
+              href="https://plcoster.github.io/homepage/projects.html"
+            >
               All Projects
             </Nav.Link>
-            <Nav.Link href="https://github.com/PLCoster">
+            <Nav.Link
+              className={styles.navlink}
+              href="https://github.com/PLCoster"
+            >
               <i className="bi bi-github"></i> Github
             </Nav.Link>
-            <Nav.Link href="https://linkedin.com/in/plcoster">
+            <Nav.Link
+              className={styles.navlink}
+              href="https://linkedin.com/in/plcoster"
+            >
               <i className="bi bi-linkedin"></i> LinkedIn
             </Nav.Link>
           </Nav>
