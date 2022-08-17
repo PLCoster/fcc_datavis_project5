@@ -16,7 +16,6 @@ import * as d3 from 'd3';
 
 function buildTreeMap({ data }, parentSelector) {
   console.log('Trying to build tree map!');
-  console.log(data);
 
   const plotDiv = d3.select(parentSelector);
   plotDiv.html('');
@@ -41,8 +40,6 @@ function buildTreeMap({ data }, parentSelector) {
 
   // Create a color scale
   const color = d3.scaleOrdinal(d3.schemeTableau10.concat(d3.schemeAccent));
-  const categories = data.children.map((child) => child.name);
-  console.log(categories);
 
   // Determine the size of the root node (containing all the children)
   const root = d3
@@ -51,8 +48,6 @@ function buildTreeMap({ data }, parentSelector) {
     .sort(function (a, b) {
       return b.height - a.height || b.value - a.value;
     });
-
-  console.log('ROOT is: ', root);
 
   // Then d3.treemap computes the position of each element of the hierarchy
   d3.treemap().size([width, height]).paddingInner(padding.tileInner)(root);
@@ -66,36 +61,24 @@ function buildTreeMap({ data }, parentSelector) {
     .enter()
     .append('rect')
     .attr('class', 'tile')
-    .attr('x', function (d, i) {
-      return d.x0;
-    })
-    .attr('y', function (d) {
-      return d.y0;
-    })
-    .attr('width', function (d) {
-      return d.x1 - d.x0;
-    })
-    .attr('height', function (d) {
-      return d.y1 - d.y0;
-    })
+    .attr('x', (d, i) => d.x0)
+    .attr('y', (d) => d.y0)
+    .attr('width', (d) => d.x1 - d.x0)
+    .attr('height', (d) => d.y1 - d.y0)
+    .attr('data-name', (d) => d.data.name)
+    .attr('data-category', (d) => d.data.category)
+    .attr('data-value', (d) => d.data.value)
     .style('stroke', 'black')
-    .style('fill', (d) => {
-      console.log('d is: ', d);
-      return color(d.data.category);
-    });
+    .style('fill', (d) => color(d.data.category));
 
-  // Add text labels to each cell
+  // Add text labels to each tile
   graphSVG
     .selectAll('text')
     .data(root.leaves())
     .enter()
     .append('text')
-    .attr('x', function (d) {
-      return d.x0 + padding.tileInner;
-    }) // +10 to adjust position (more right)
-    .attr('y', function (d) {
-      return d.y0 + tileFontSize + padding.tileInner;
-    }) // +20 to adjust position (lower)
+    .attr('x', (d) => d.x0 + padding.tileInner)
+    .attr('y', (d) => d.y0 + tileFontSize + padding.tileInner)
     .attr('font-size', `${tileFontSize}px`)
     .attr('fill', 'white')
     .selectAll('tspan')
@@ -133,11 +116,16 @@ function buildTreeMap({ data }, parentSelector) {
     .append('tspan')
     .attr('x', (d) => d.x + padding.tileTextInner)
     .attr('y', (d, i) => d.y + tileFontSize + padding.tileTextInner + i * 10)
-    .attr('fill-opacity', (d, i) => {
-      //
-      return tileFontSize + padding.tileTextInner + (i + 1) * 10 > d.h ? 0 : 1;
+    .attr('visibility', (d, i) => {
+      // Hide any tspan elements that would overflow bottom of tile
+      return tileFontSize + padding.tileTextInner + (i + 1) * 10 > d.h
+        ? 'hidden'
+        : 'visible';
     })
     .text((d) => d.word);
+
+  const categories = data.children.map((child) => child.name);
+  console.log(categories);
 }
 
 export default buildTreeMap;
