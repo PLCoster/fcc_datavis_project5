@@ -74,10 +74,7 @@ function buildTreeMap(
   const width = 1000;
   const height = 0.8 * width;
   const padding = {
-    left: 40,
-    bottom: 40,
-    top: 40,
-    right: 40,
+    right: 140,
     tileInner: 1,
     tileTextInner: 5,
   };
@@ -109,7 +106,10 @@ function buildTreeMap(
     });
 
   // Then d3.treemap computes the position of each element of the hierarchy
-  d3.treemap().size([width, height]).paddingInner(padding.tileInner)(root);
+  d3
+    .treemap()
+    .size([width - padding.right, height])
+    .paddingInner(padding.tileInner)(root);
 
   // Add a group element for each tile
   graphSVG
@@ -206,8 +206,41 @@ function buildTreeMap(
     })
     .text((d) => d.word);
 
-  const categories = data.children.map((child) => child.name);
+  // Add category color legend:
+  const categories = root.children.map((child) => child.data.name);
   console.log(categories);
+  0;
+
+  const rectSize = 20;
+  const legendFontSize = 12;
+
+  const legendGroup = graphSVG.append('g').attr('id', 'legend');
+
+  legendGroup
+    .selectAll('rect')
+    .data(categories)
+    .enter()
+    .append('rect')
+    .attr('x', width - padding.right + 10)
+    .attr('y', (d, i) => (i + 1) * rectSize * 2)
+    .attr('width', rectSize)
+    .attr('height', rectSize)
+    .style('fill', (d) => colorScale(d));
+
+  legendGroup
+    .selectAll('text')
+    .data(categories)
+    .enter()
+    .append('text')
+    .attr('x', width - padding.right + 20 + rectSize)
+    .attr('y', (d, i) => (i + 1) * rectSize * 2 + 16)
+    .attr('width', rectSize)
+    .attr('height', rectSize)
+    .style('fill', 'white')
+    .attr('font-size', `${legendFontSize}px`)
+    .text((d) => d);
+
+  console.log('ROOT: ', root);
 }
 
 export default buildTreeMap;
