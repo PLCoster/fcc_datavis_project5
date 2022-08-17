@@ -14,8 +14,59 @@
 
 import * as d3 from 'd3';
 
-function buildTreeMap({ data }, parentSelector) {
+import styles from '../styles/TreeMap.module.css';
+
+// Helper that updates tooltip when a county is moused over
+const handleMouseOver = (
+  event,
+  tileData,
+  valueFormatter,
+  categoryFormatter,
+  colorScale
+) => {
+  const tooltip = d3.select('#tooltip');
+  // const tooltipBackgroundColor = colorScale(countyData.bachelorsOrHigher);
+  const screenWidth = d3.select('body').node().getBoundingClientRect().width;
+
+  // Display tooltip at cursor position, add county data and dynamic color
+  tooltip
+    .html('')
+    .attr('data-value', tileData.data.value)
+    .style('top', `${event.layerY - 100}px`)
+    .style(
+      'left',
+      `${event.layerX + 20}px`
+      // event.layerX > screenWidth / 2
+      //   ? `${event.layerX - 200}px`
+      //   : `${event.layerX + 20}px`
+    )
+    // .style(
+    //   'color',
+    //   COLOR_ARR.indexOf(tooltipBackgroundColor) > 4
+    //     ? 'white'
+    //     : `${BACKGROUND_COLOR}`
+    // )
+    .style('background-color', colorScale(tileData.data.category))
+    .style('visibility', 'visible');
+  // .style('display', 'block');
+
+  tooltip.append('h5').text(`${tileData.data.name.split(/: | - |, |\. /)[0]}`);
+  tooltip.append('h6').text(`Name: ${tileData.data.name}`);
+  tooltip.append('h6').text(categoryFormatter(tileData.data.category));
+  tooltip.append('h6').text(valueFormatter(tileData.data.value));
+};
+
+// Hide tooltip on county mouseout
+const handleMouseOut = () => {
+  d3.select('#tooltip').style('visibility', 'hidden');
+};
+
+function buildTreeMap(
+  { data, valueFormatter, categoryFormatter },
+  parentSelector
+) {
   console.log('Trying to build tree map!');
+  console.log(valueFormatter, categoryFormatter);
 
   const plotDiv = d3.select(parentSelector);
   plotDiv.html('');
@@ -38,8 +89,16 @@ function buildTreeMap({ data }, parentSelector) {
     .attr('width', width)
     .attr('height', height);
 
-  // Create a color scale
-  const color = d3.scaleOrdinal(d3.schemeTableau10.concat(d3.schemeAccent));
+  // Add tooltip element
+  plotDiv
+    .append('div')
+    .attr('id', 'tooltip')
+    .attr('class', styles.tooltip)
+    .style('position', 'absolute')
+    .style('visibility', 'hidden');
+
+  // Create a color scale for the tiles
+  const colorScale = d3.scaleOrdinal(d3.schemeTableau10.concat(d3.schemeDark2));
 
   // Determine the size of the root node (containing all the children)
   const root = d3
@@ -52,13 +111,36 @@ function buildTreeMap({ data }, parentSelector) {
   // Then d3.treemap computes the position of each element of the hierarchy
   d3.treemap().size([width, height]).paddingInner(padding.tileInner)(root);
 
-  // graphSVG.selectAll('g').data(root.leaves()).enter().append('g');
+  // Add a group element for each tile
+  graphSVG
+    .selectAll('g')
+    .data(root.leaves())
+    .enter()
+    .append('g')
+    .attr('class', 'tile-group')
+    .on('mouseover', (event, tileData) =>
+      handleMouseOver(
+        event,
+        tileData,
+        valueFormatter,
+        categoryFormatter,
+        colorScale
+      )
+    )
+    .on('mousemove', (event, tileData) =>
+      handleMouseOver(
+        event,
+        tileData,
+        valueFormatter,
+        categoryFormatter,
+        colorScale
+      )
+    )
+    .on('mouseout', (event, tileData) => handleMouseOut());
 
   // Add colored tiles for each game / movie / project
   graphSVG
-    .selectAll('rect')
-    .data(root.leaves())
-    .enter()
+    .selectAll('.tile-group')
     .append('rect')
     .attr('class', 'tile')
     .attr('x', (d, i) => d.x0)
@@ -69,14 +151,13 @@ function buildTreeMap({ data }, parentSelector) {
     .attr('data-category', (d) => d.data.category)
     .attr('data-value', (d) => d.data.value)
     .style('stroke', 'black')
-    .style('fill', (d) => color(d.data.category));
+    .style('fill', (d) => colorScale(d.data.category));
 
-  // Add text labels to each tile
+  // Add text labels to each tile group
   graphSVG
-    .selectAll('text')
-    .data(root.leaves())
-    .enter()
+    .selectAll('.tile-group')
     .append('text')
+    .attr('class', 'tile-text')
     .attr('x', (d) => d.x0 + padding.tileInner)
     .attr('y', (d) => d.y0 + tileFontSize + padding.tileInner)
     .attr('font-size', `${tileFontSize}px`)
@@ -88,30 +169,31 @@ function buildTreeMap({ data }, parentSelector) {
         .replace(/\//, ' & ')
         .split(/ /)
         .reduce((accum, word) => {
-          // If no word has been added yet
+          // If it is the first word in the name, add it immediately
           if (!accum.length) {
             accum.push({ word, x: d.x0, y: d.y0, h: d.y1 - d.y0 });
             return accum;
           }
+
+          // Otherwise determine if the current word can be added onto the same line
+
           // Get approx width of last word:
           const lastDataObj = accum[accum.length - 1];
           const lastWordLength = lastDataObj.word.length;
           const availableTileWidth = d.x1 - d.x0 - 2 * padding.tileTextInner;
+
           // Determine if the current word will fit on the same line
           if ((lastWordLength + word.length + 1) * 6 < availableTileWidth) {
+            // Current word will fit on line with previous word(s) -> combine into one token
             lastDataObj.word = lastDataObj.word + ' ' + word;
           } else {
+            // Current word will not fit on same line, add it as separate token
             accum.push({ word, x: d.x0, y: d.y0, h: d.y1 - d.y0 });
           }
 
           return accum;
         }, []);
     })
-    // .data((d) => {
-    //   return d.data.name
-    //     .split(/ /)
-    //     .map((word) => ({ word, x: d.x0, y: d.y0, h: d.y1 - d.y0 }));
-    // })
     .enter()
     .append('tspan')
     .attr('x', (d) => d.x + padding.tileTextInner)

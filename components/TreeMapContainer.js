@@ -10,11 +10,14 @@ import gamesData from '../assets/games.json';
 import moviesData from '../assets/movies.json';
 import kickstarterData from '../assets/kickstarter.json';
 
+// Information about each dataset, with formatting functions for category and value entries
 const datasets = {
   games: {
     url: 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json',
     title: 'Video Game Sales',
     subtitle: 'Top 100 Best-Selling Games, Grouped by Platform',
+    categoryFormatter: (categoryStr) => `Platform: ${categoryStr}`,
+    valueFormatter: (valueStr) => `Sales: ${valueStr} million units`,
     backup: gamesData,
   },
   movies: {
@@ -22,6 +25,11 @@ const datasets = {
     title: 'Movie Box Office',
     subtitle:
       'Top 100 Highest-Grossing (U.S. Domestic) Movies, Grouped by Genre',
+    categoryFormatter: (categoryStr) => `Genre: ${categoryStr}`,
+    valueFormatter: (valueStr) =>
+      `Domestic Box Office: $${
+        Math.round(valueStr / 10 ** 4) / 10 ** 2
+      } million`,
     backup: moviesData,
   },
   kickstarter: {
@@ -29,6 +37,9 @@ const datasets = {
     title: 'Kickstarter Pledges',
     subtitle:
       'Top 100 Highest-Pledged Kickstarter Campaigns, Grouped by Category',
+    categoryFormatter: (categoryStr) => `Category: ${categoryStr}`,
+    valueFormatter: (valueStr) =>
+      `Total Pledged: $${Math.round(valueStr / 10 ** 4) / 10 ** 2} million`,
     backup: kickstarterData,
   },
 };
@@ -40,18 +51,22 @@ function TreeMapContainer() {
   const [currentDataset, setCurrentDataset] = useState({
     title: null,
     subtitle: null,
+    categoryFormatter: null,
+    valueFormatter: null,
     data: null,
   });
   const [loadingData, setLoadingData] = useState(true);
 
   // Load Current Dataset by Name it whenever the current Dataset Changes:
   useEffect(() => {
-    const { url, title, subtitle, backup } = datasets[currentDatasetName];
+    const { url, title, subtitle, categoryFormatter, valueFormatter, backup } =
+      datasets[currentDatasetName];
+
+    const plotInfo = { title, subtitle, categoryFormatter, valueFormatter };
 
     if (plotDatasets[currentDatasetName]) {
       setCurrentDataset({
-        title,
-        subtitle,
+        ...plotInfo,
         data: plotDatasets[currentDatasetName],
       });
       return;
@@ -72,15 +87,22 @@ function TreeMapContainer() {
       .then((data) => {
         console.log('GOT DATA: ', data);
         setPlotDatasets({ ...plotDatasets, [currentDatasetName]: data });
-        setCurrentDataset({ title, data });
+        setCurrentDataset({
+          ...plotInfo,
+          data,
+        });
       })
       .catch((err) => {
+        // Revert to backup dataset JSON
         console.log('ERROR during fetch: ', err.message);
         setPlotDatasets({
           ...plotDatasets,
-          [currentDatasetName]: datasets[currentDatasetName],
+          [currentDatasetName]: datasets[currentDatasetName].backup,
         });
-        setCurrentDataset({ title, data: datasets[currentDatasetName] });
+        setCurrentDataset({
+          ...plotInfo,
+          data: datasets[currentDatasetName].backup,
+        });
       })
       .finally(() => {
         setLoadingData(false);
