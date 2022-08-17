@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { Container, Button } from 'react-bootstrap';
 
+import TreeMap from './TreeMap';
+
 import styles from './styles/TreeMapContainer.module.css';
 
 import gamesData from '../assets/games.json';
@@ -11,17 +13,22 @@ import kickstarterData from '../assets/kickstarter.json';
 const datasets = {
   games: {
     url: 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json',
-    title: 'UPDATE THIS',
+    title: 'Video Game Sales',
+    subtitle: 'Top 100 Best-Selling Games, Grouped by Platform',
     backup: gamesData,
   },
   movies: {
     url: 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json',
-    title: 'UPDATE THIS',
+    title: 'Movie Box Office',
+    subtitle:
+      'Top 100 Highest-Grossing (U.S. Domestic) Movies, Grouped by Genre',
     backup: moviesData,
   },
   kickstarter: {
     url: 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json',
-    title: 'UPDATE THIS',
+    title: 'Kickstarter Pledges',
+    subtitle:
+      'Top 100 Highest-Pledged Kickstarter Campaigns, Grouped by Category',
     backup: kickstarterData,
   },
 };
@@ -30,15 +37,23 @@ function TreeMapContainer() {
   const [currentDatasetName, setCurrentDatasetName] = useState('games');
 
   const [plotDatasets, setPlotDatasets] = useState({});
-  const [currentDataset, setCurrentDataset] = useState(null);
+  const [currentDataset, setCurrentDataset] = useState({
+    title: null,
+    subtitle: null,
+    data: null,
+  });
   const [loadingData, setLoadingData] = useState(true);
 
   // Load Current Dataset by Name it whenever the current Dataset Changes:
   useEffect(() => {
-    const { url, title, backup } = datasets[currentDatasetName];
+    const { url, title, subtitle, backup } = datasets[currentDatasetName];
 
     if (plotDatasets[currentDatasetName]) {
-      setCurrentDataset({ title, data: plotDatasets[currentDatasetName] });
+      setCurrentDataset({
+        title,
+        subtitle,
+        data: plotDatasets[currentDatasetName],
+      });
       return;
     }
 
@@ -75,17 +90,27 @@ function TreeMapContainer() {
   return (
     <>
       <Container className={styles.treemapcontainer}>
-        <Button onClick={() => setCurrentDatasetName('games')}>Games</Button>
-        <Button onClick={() => setCurrentDatasetName('movies')}>Movies</Button>
-        <Button onClick={() => setCurrentDatasetName('kickstarter')}>
-          Kickstarter
-        </Button>
-        <p>{currentDatasetName}</p>
-        {loadingData ? (
-          <p>Loading Data...</p>
-        ) : (
-          <p>{JSON.stringify(currentDataset)}</p>
-        )}
+        <Container className={styles.databuttoncontainer}>
+          <Button
+            className={styles.databutton}
+            onClick={() => setCurrentDatasetName('games')}
+          >
+            Games
+          </Button>
+          <Button
+            className={styles.databutton}
+            onClick={() => setCurrentDatasetName('movies')}
+          >
+            Movies
+          </Button>
+          <Button
+            className={styles.databutton}
+            onClick={() => setCurrentDatasetName('kickstarter')}
+          >
+            Kickstarter
+          </Button>
+        </Container>
+        <TreeMap plotInfo={currentDataset} dataReady={!loadingData} />
       </Container>
     </>
   );

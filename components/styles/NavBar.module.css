@@ -1,3 +1,20 @@
+.navbar {
+  /* background-image: linear-gradient(
+    to right,
+    #393b79,
+    #637939,
+    #843c39,
+    #7b4173
+  ); */
+  background-image: linear-gradient(
+    to right,
+    #3182bd,
+    #e6550d,
+    #31a354,
+    #756bb1
+  );
+}
+
 .navbarBrand {
   margin-left: 40px;
 }

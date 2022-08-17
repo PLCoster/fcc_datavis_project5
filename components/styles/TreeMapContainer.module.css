@@ -1,3 +1,16 @@
 .treemapcontainer {
-  background-color: darkgray;
+  margin-top: 2vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.databuttoncontainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.databutton {
+  margin: 20px;
 }
