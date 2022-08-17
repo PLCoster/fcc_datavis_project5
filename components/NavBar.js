@@ -32,7 +32,7 @@ function NavBar({ timerPhase }) {
     >
       <Container fluid>
         <Navbar.Brand href="#home" className={styles.navbarBrand}>
-          25 + 5 Clock
+          Treemap Diagram
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
