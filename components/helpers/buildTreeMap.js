@@ -22,38 +22,36 @@ const handleMouseOver = (
   tileData,
   valueFormatter,
   categoryFormatter,
-  colorScale
+  colorScale,
+  tileFontSize
 ) => {
   const tooltip = d3.select('#tooltip');
-  // const tooltipBackgroundColor = colorScale(countyData.bachelorsOrHigher);
-  const screenWidth = d3.select('body').node().getBoundingClientRect().width;
 
   // Display tooltip at cursor position, add county data and dynamic color
   tooltip
     .html('')
     .attr('data-value', tileData.data.value)
     .style('top', `${event.layerY - 100}px`)
-    .style(
-      'left',
-      `${event.layerX + 20}px`
-      // event.layerX > screenWidth / 2
-      //   ? `${event.layerX - 200}px`
-      //   : `${event.layerX + 20}px`
-    )
-    // .style(
-    //   'color',
-    //   COLOR_ARR.indexOf(tooltipBackgroundColor) > 4
-    //     ? 'white'
-    //     : `${BACKGROUND_COLOR}`
-    // )
+    .style('left', `${event.layerX + 20}px`)
     .style('background-color', colorScale(tileData.data.category))
     .style('visibility', 'visible');
-  // .style('display', 'block');
 
-  tooltip.append('h5').text(`${tileData.data.name.split(/: | - |, |\. /)[0]}`);
-  tooltip.append('h6').text(`Name: ${tileData.data.name}`);
-  tooltip.append('h6').text(categoryFormatter(tileData.data.category));
-  tooltip.append('h6').text(valueFormatter(tileData.data.value));
+  tooltip
+    .append('h5')
+    .text(`${tileData.data.name.split(/: | - |, |\. /)[0]}`)
+    .style('font-size', `${Math.max(tileFontSize * 1.5, 12)}px`);
+  tooltip
+    .append('h6')
+    .text(`Name: ${tileData.data.name}`)
+    .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
+  tooltip
+    .append('h6')
+    .text(categoryFormatter(tileData.data.category))
+    .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
+  tooltip
+    .append('h6')
+    .text(valueFormatter(tileData.data.value))
+    .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
 };
 
 // Hide tooltip on county mouseout
@@ -72,11 +70,11 @@ function buildTreeMap(
   const width = parentWidth;
   const height = 0.6 * width;
   const padding = {
-    right: 140,
+    right: Math.ceil(width / 100) * 12,
     tileInner: 1,
     tileTextInner: 5,
   };
-  const tileFontSize = Math.floor(width / 100) - 2;
+  const tileFontSize = Math.floor(width / 100) - 1;
 
   const graphSVG = plotDiv
     .append('svg')
@@ -122,7 +120,8 @@ function buildTreeMap(
         tileData,
         valueFormatter,
         categoryFormatter,
-        colorScale
+        colorScale,
+        tileFontSize
       )
     )
     .on('mousemove', (event, tileData) =>
@@ -131,10 +130,11 @@ function buildTreeMap(
         tileData,
         valueFormatter,
         categoryFormatter,
-        colorScale
+        colorScale,
+        tileFontSize
       )
     )
-    .on('mouseout', (event, tileData) => handleMouseOut());
+    .on('mouseout', handleMouseOut);
 
   // Add colored tiles for each game / movie / project
   graphSVG
@@ -209,8 +209,8 @@ function buildTreeMap(
   console.log(categories);
   0;
 
-  const rectSize = 20;
-  const legendFontSize = 12;
+  const rectSize = tileFontSize * 2;
+  const legendFontSize = tileFontSize + 2;
 
   const legendGroup = graphSVG.append('g').attr('id', 'legend');
 
@@ -221,7 +221,7 @@ function buildTreeMap(
     .append('rect')
     .attr('class', 'legend-item')
     .attr('x', width - padding.right + 10)
-    .attr('y', (d, i) => (i + 1) * rectSize * 2)
+    .attr('y', (d, i) => i * rectSize * 1.8)
     .attr('width', rectSize)
     .attr('height', rectSize)
     .style('fill', (d) => colorScale(d));
@@ -232,8 +232,8 @@ function buildTreeMap(
     .enter()
     .append('text')
     .attr('class', 'legend-text')
-    .attr('x', width - padding.right + 20 + rectSize)
-    .attr('y', (d, i) => (i + 1) * rectSize * 2 + 16)
+    .attr('x', width - padding.right + 15 + rectSize)
+    .attr('y', (d, i) => i * rectSize * 1.8 + rectSize * 0.8)
     .attr('width', rectSize)
     .attr('height', rectSize)
     .style('fill', 'white')

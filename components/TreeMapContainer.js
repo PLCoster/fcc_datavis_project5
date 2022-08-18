@@ -126,7 +126,7 @@ function TreeMapContainer() {
   }, []);
 
   return (
-    <main>
+    <main className="container">
       <Container className={styles.treemapcontainer} ref={containerRef}>
         <div className={styles.databuttoncontainer}>
           <h5>Select Dataset: </h5>

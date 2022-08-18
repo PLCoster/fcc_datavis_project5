@@ -1,6 +1,7 @@
 .treemapcontainer {
   margin: 1vh auto 5vh auto;
-  /* min-width: 720px; */
+  padding: 0;
+  min-width: 540px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -10,6 +11,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.databuttoncontainer h5 {
+  font-size: 1rem;
 }
 
 .databutton {
