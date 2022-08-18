@@ -89,7 +89,6 @@ function TreeMapContainer() {
         );
       })
       .then((data) => {
-        console.log('GOT DATA: ', data);
         setPlotDatasets({ ...plotDatasets, [currentDatasetName]: data });
         setCurrentDataset({
           ...plotInfo,

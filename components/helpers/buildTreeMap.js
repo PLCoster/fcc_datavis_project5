@@ -206,8 +206,6 @@ function buildTreeMap(
 
   // Add category color legend:
   const categories = root.children.map((child) => child.data.name);
-  console.log(categories);
-  0;
 
   const rectSize = tileFontSize * 2;
   const legendFontSize = tileFontSize + 2;
@@ -239,8 +237,6 @@ function buildTreeMap(
     .style('fill', 'white')
     .attr('font-size', `${legendFontSize}px`)
     .text((d) => d);
-
-  console.log('ROOT: ', root);
 }
 
 export default buildTreeMap;
