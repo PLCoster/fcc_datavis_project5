@@ -5,18 +5,18 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   color: white;
-  background: #485563; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
+  background: #2b343e; /* fallback for old browsers */
+  /* background: -webkit-linear-gradient(
     to left,
     #29323c,
     #485563
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
+  ); Chrome 10-25, Safari 5.1-6 */
+  /* background: linear-gradient(
     to left,
     #29323c,
     #485563
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  min-width: 564px;
+  ); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* min-width: 564px; */
 }
 
 @media (prefers-color-scheme: dark) {

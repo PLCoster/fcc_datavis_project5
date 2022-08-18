@@ -16,7 +16,7 @@ import * as d3 from 'd3';
 
 import styles from '../styles/TreeMap.module.css';
 
-// Helper that updates tooltip when a county is moused over
+// Helper that updates tooltip when a tile is moused over
 const handleMouseOver = (
   event,
   tileData,
@@ -27,12 +27,12 @@ const handleMouseOver = (
 ) => {
   const tooltip = d3.select('#tooltip');
 
-  // Display tooltip at cursor position, add county data and dynamic color
+  // Display tooltip at cursor position, add tile data and dynamic color
   tooltip
     .html('')
     .attr('data-value', tileData.data.value)
-    .style('top', `${event.layerY - 100}px`)
-    .style('left', `${event.layerX + 20}px`)
+    .style('top', `${event.clientY - 100}px`)
+    .style('left', `${event.clientX}px`)
     .style('background-color', colorScale(tileData.data.category))
     .style('visibility', 'visible');
 
@@ -54,7 +54,7 @@ const handleMouseOver = (
     .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
 };
 
-// Hide tooltip on county mouseout
+// Hide tooltip on tile mouseout
 const handleMouseOut = () => {
   d3.select('#tooltip').style('visibility', 'hidden');
 };
@@ -67,14 +67,14 @@ function buildTreeMap(
   const plotDiv = d3.select(parentSelector);
   plotDiv.html('');
 
-  const width = parentWidth;
-  const height = Math.min(width, 600);
+  const width = Math.max(640, parentWidth);
+  const height = Math.min(width, 640);
   const padding = {
     right: Math.ceil(width / 100) * 12,
     tileInner: 1,
-    tileTextInner: 5,
+    tileTextInner: Math.max(Math.floor(width / 300), 2),
   };
-  const tileFontSize = Math.floor(width / 100) - 1;
+  const tileFontSize = Math.max(Math.floor(width / 100) - 1, 8);
 
   const graphSVG = plotDiv
     .append('svg')
@@ -181,7 +181,7 @@ function buildTreeMap(
           const availableTileWidth = d.x1 - d.x0 - 2 * padding.tileTextInner;
 
           // Determine if the current word will fit on the same line
-          if ((lastWordLength + word.length + 1) * 7 < availableTileWidth) {
+          if ((lastWordLength + word.length + 1) * 6 < availableTileWidth) {
             // Current word will fit on line with previous word(s) -> combine into one token
             lastDataObj.word = lastDataObj.word + ' ' + word;
           } else {
@@ -203,6 +203,16 @@ function buildTreeMap(
         : 'visible';
     })
     .text((d) => d.word);
+
+  // Add an additional rect over the legend area to mask out any overlapping text from tiles
+  graphSVG
+    .append('g')
+    .append('rect')
+    .attr('x', width - padding.right)
+    .attr('y', 0)
+    .attr('width', padding.right)
+    .attr('height', height)
+    .attr('fill', '#2b343e'); // Match background color to hide this rect
 
   // Add category color legend:
   const categories = root.children.map((child) => child.data.name);
