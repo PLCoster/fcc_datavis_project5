@@ -68,7 +68,7 @@ function buildTreeMap(
   plotDiv.html('');
 
   const width = parentWidth;
-  const height = 0.6 * width;
+  const height = Math.min(width, 600);
   const padding = {
     right: Math.ceil(width / 100) * 12,
     tileInner: 1,
@@ -207,7 +207,7 @@ function buildTreeMap(
   // Add category color legend:
   const categories = root.children.map((child) => child.data.name);
 
-  const rectSize = tileFontSize * 2;
+  const rectSize = tileFontSize * 1.5;
   const legendFontSize = tileFontSize + 2;
 
   const legendGroup = graphSVG.append('g').attr('id', 'legend');
