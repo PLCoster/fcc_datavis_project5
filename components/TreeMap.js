@@ -19,7 +19,7 @@ function TreeMap({ plotInfo, dataReady, containerWidth }) {
 
   return (
     <div
-      className={styles.treemapContainer}
+      className={styles.treemapOuterContainer}
       style={{ opacity: containerOpacity }}
     >
       <h1 id="title" className={`display-6 ${styles.title}`}>
@@ -28,7 +28,7 @@ function TreeMap({ plotInfo, dataReady, containerWidth }) {
       <h2 id="description" className={`display-6 ${styles.subtitle}`}>
         {plotInfo.subtitle}
       </h2>
-      <div id={treemapParentID}></div>
+      <div id={treemapParentID} className={styles.treemapParent}></div>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 /* === CONTAINER OF PLOT AND HEADINGS === */
-.treemapContainer {
+.treemapOuterContainer {
   transition: opacity 1s;
 }
+
 /* === PLOT HEADINGS === */
 .title {
   font-size: 2rem;
@@ -9,6 +10,12 @@
 
 .subtitle {
   font-size: 1.2rem;
+}
+
+/* === TREEMAP PARENT CONTAINER === */
+.treemapParent {
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* === TOOLTIP === */

@@ -1,16 +1,15 @@
-.treemapcontainer {
+.appcontainer {
   margin: 1vh auto 5vh auto;
   padding: 0;
-  min-width: 540px;
   display: flex;
-  align-items: center;
   flex-direction: column;
 }
 
 .databuttoncontainer {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .databuttoncontainer h5 {
@@ -18,7 +17,7 @@
 }
 
 .databutton {
-  margin: 20px;
+  margin: 20px 20px 0 20px;
   border: none;
 }
 
