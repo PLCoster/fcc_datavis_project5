@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { Container, Button } from 'react-bootstrap';
 
@@ -57,6 +57,10 @@ function TreeMapContainer() {
   });
   const [loadingData, setLoadingData] = useState(true);
 
+  const [containerWidth, setContainerWidth] = useState(1000);
+
+  const containerRef = useRef(null);
+
   // Load Current Dataset by Name it whenever the current Dataset Changes:
   useEffect(() => {
     const { url, title, subtitle, categoryFormatter, valueFormatter, backup } =
@@ -109,9 +113,21 @@ function TreeMapContainer() {
       });
   }, [currentDatasetName, plotDatasets]);
 
+  // Set up event listener to update plot width on window resize
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setContainerWidth(containerRef.current.clientWidth);
+    };
+    handleWindowResize();
+    window.addEventListener('resize', handleWindowResize);
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
+
   return (
-    <>
-      <Container className={styles.treemapcontainer}>
+    <main>
+      <Container className={styles.treemapcontainer} ref={containerRef}>
         <div className={styles.databuttoncontainer}>
           <h5>Select Dataset: </h5>
           <Button
@@ -133,9 +149,13 @@ function TreeMapContainer() {
             Kickstarter
           </Button>
         </div>
-        <TreeMap plotInfo={currentDataset} dataReady={!loadingData} />
+        <TreeMap
+          plotInfo={currentDataset}
+          dataReady={!loadingData}
+          containerWidth={containerWidth}
+        />
       </Container>
-    </>
+    </main>
   );
 }
 

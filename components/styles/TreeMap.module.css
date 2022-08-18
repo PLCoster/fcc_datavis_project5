@@ -1,3 +1,7 @@
+/* === CONTAINER OF PLOT AND HEADINGS === */
+.treemapContainer {
+  transition: opacity 1s;
+}
 /* === PLOT HEADINGS === */
 .title {
   font-size: 2rem;

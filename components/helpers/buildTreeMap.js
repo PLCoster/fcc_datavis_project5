@@ -63,22 +63,20 @@ const handleMouseOut = () => {
 
 function buildTreeMap(
   { data, valueFormatter, categoryFormatter },
-  parentSelector
+  parentSelector,
+  parentWidth
 ) {
-  console.log('Trying to build tree map!');
-  console.log(valueFormatter, categoryFormatter);
-
   const plotDiv = d3.select(parentSelector);
   plotDiv.html('');
 
-  const width = 1000;
-  const height = 0.8 * width;
+  const width = parentWidth;
+  const height = 0.6 * width;
   const padding = {
     right: 140,
     tileInner: 1,
     tileTextInner: 5,
   };
-  const tileFontSize = width / 100;
+  const tileFontSize = Math.floor(width / 100) - 2;
 
   const graphSVG = plotDiv
     .append('svg')
@@ -183,7 +181,7 @@ function buildTreeMap(
           const availableTileWidth = d.x1 - d.x0 - 2 * padding.tileTextInner;
 
           // Determine if the current word will fit on the same line
-          if ((lastWordLength + word.length + 1) * 6 < availableTileWidth) {
+          if ((lastWordLength + word.length + 1) * 7 < availableTileWidth) {
             // Current word will fit on line with previous word(s) -> combine into one token
             lastDataObj.word = lastDataObj.word + ' ' + word;
           } else {
@@ -197,10 +195,10 @@ function buildTreeMap(
     .enter()
     .append('tspan')
     .attr('x', (d) => d.x + padding.tileTextInner)
-    .attr('y', (d, i) => d.y + tileFontSize + padding.tileTextInner + i * 10)
+    .attr('y', (d, i) => d.y + padding.tileTextInner + (i + 1) * tileFontSize)
     .attr('visibility', (d, i) => {
       // Hide any tspan elements that would overflow bottom of tile
-      return tileFontSize + padding.tileTextInner + (i + 1) * 10 > d.h
+      return tileFontSize + padding.tileTextInner + (i + 1) * tileFontSize > d.h
         ? 'hidden'
         : 'visible';
     })

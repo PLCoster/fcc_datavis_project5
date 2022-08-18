@@ -15,7 +15,7 @@ function NavBar({ timerPhase }) {
     return (
       <NavDropdown.Item
         key={name}
-        href={`https://plcoster.github.io/fcc_frontendlibs_project${index}/`}
+        href={`https://plcoster.github.io/fcc_datavis_project${index}/`}
       >
         {name}
       </NavDropdown.Item>
