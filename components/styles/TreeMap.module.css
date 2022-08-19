@@ -20,6 +20,7 @@
 
 /* === TOOLTIP === */
 .tooltip {
+  width: 200px;
   padding: 5px;
   text-align: left;
   opacity: 0.95;
@@ -29,7 +30,8 @@
   transition: font-color 1s, background-color 1s;
 }
 
-.tooltip h5 {
+.tooltip h5,
+.tooltip .bold {
   font-weight: 600;
 }
 

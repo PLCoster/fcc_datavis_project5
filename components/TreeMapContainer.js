@@ -16,8 +16,10 @@ const datasets = {
     url: 'https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json',
     title: 'Video Game Sales',
     subtitle: 'Top 100 Best-Selling Games, Grouped by Platform',
-    categoryFormatter: (categoryStr) => `Platform: ${categoryStr}`,
-    valueFormatter: (valueStr) => `Sales: ${valueStr} million units`,
+    categoryFormatter: (categoryStr) =>
+      `<strong>Platform:</strong> ${categoryStr}`,
+    valueFormatter: (valueStr) =>
+      `<strong>Sales:</strong> ${valueStr} million units`,
     backup: gamesData,
   },
   movies: {
@@ -25,9 +27,10 @@ const datasets = {
     title: 'Movie Box Office',
     subtitle:
       'Top 100 Highest-Grossing (U.S. Domestic) Movies, Grouped by Genre',
-    categoryFormatter: (categoryStr) => `Genre: ${categoryStr}`,
+    categoryFormatter: (categoryStr) =>
+      `<strong>Genre:</strong> ${categoryStr}`,
     valueFormatter: (valueStr) =>
-      `Domestic Box Office: $${
+      `<strong>Domestic Box Office:</strong> $${
         Math.round(valueStr / 10 ** 4) / 10 ** 2
       } million`,
     backup: moviesData,
@@ -37,9 +40,12 @@ const datasets = {
     title: 'Kickstarter Pledges',
     subtitle:
       'Top 100 Highest-Pledged Kickstarter Campaigns, Grouped by Category',
-    categoryFormatter: (categoryStr) => `Category: ${categoryStr}`,
+    categoryFormatter: (categoryStr) =>
+      `<strong>Category:</strong> ${categoryStr}`,
     valueFormatter: (valueStr) =>
-      `Total Pledged: $${Math.round(valueStr / 10 ** 4) / 10 ** 2} million`,
+      `<strong>Total Pledged:</strong> $${
+        Math.round(valueStr / 10 ** 4) / 10 ** 2
+      } million`,
     backup: kickstarterData,
   },
 };

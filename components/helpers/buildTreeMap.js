@@ -26,13 +26,19 @@ const handleMouseOver = (
   tileFontSize
 ) => {
   const tooltip = d3.select('#tooltip');
+  const screenWidth = d3.select('body').node().getBoundingClientRect().width;
 
   // Display tooltip at cursor position, add tile data and dynamic color
   tooltip
     .html('')
     .attr('data-value', tileData.data.value)
-    .style('top', `${event.clientY - 100}px`)
-    .style('left', `${event.clientX}px`)
+    .style('top', `${event.pageY - 100}px`)
+    .style(
+      'left',
+      event.clientX < screenWidth / 2
+        ? `${event.pageX + 20}px`
+        : `${event.pageX - 220}px`
+    )
     .style('background-color', colorScale(tileData.data.category))
     .style('visibility', 'visible');
 
@@ -42,15 +48,15 @@ const handleMouseOver = (
     .style('font-size', `${Math.max(tileFontSize * 1.5, 12)}px`);
   tooltip
     .append('h6')
-    .text(`Name: ${tileData.data.name}`)
+    .html(`<strong>Name</strong>: ${tileData.data.name}`)
     .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
   tooltip
     .append('h6')
-    .text(categoryFormatter(tileData.data.category))
+    .html(categoryFormatter(tileData.data.category))
     .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
   tooltip
     .append('h6')
-    .text(valueFormatter(tileData.data.value))
+    .html(valueFormatter(tileData.data.value))
     .style('font-size', `${Math.max(tileFontSize * 1, 10)}px`);
 };
 
