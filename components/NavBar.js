@@ -43,7 +43,10 @@ function NavBar({ timerPhase }) {
             >
               Home
             </Nav.Link>
-            <NavDropdown title="FreeCodeCamp Projects" id="basic-nav-dropdown">
+            <NavDropdown
+              title="FreeCodeCamp DataVis Projects"
+              id="basic-nav-dropdown"
+            >
               {fccProjectLinks}
             </NavDropdown>
             <Nav.Link
